@@ -351,6 +351,12 @@ function Base.fill!(x::ArrowheadVector{T}, val) where T
     return x
 end
 
+# Override ldiv! for identity matrix to avoid scalar indexing (needed for Krylov.jl)
+function LinearAlgebra.ldiv!(y::ArrowheadVector{T}, ::UniformScaling, x::ArrowheadVector{T}) where T
+    copy!(y, x)  # Identity operation: y = I⁻¹x = x
+    return y
+end
+
 function Base.copy(src::ArrowheadVector{T,VT}) where {T,VT}
     z0_copy = copy(src.z0)
     z_scenarios_copy = [copy(z) for z in src.z_scenarios]

@@ -142,6 +142,7 @@ Block triangular solve using partial solves with augmented systems:
 Iterative refinement to correct for pivot perturbations:
 - Custom `ArrowheadOperator` implementing matrix-vector products
 - Custom `ArrowheadPreconditioner` using the factorization
+- **Right preconditioning**: BiCGSTAB monitors true residual `||b - Ax||` (not preconditioned)
 - Preallocated workspace for in-place operations
 - Convergence based on relative residual
 

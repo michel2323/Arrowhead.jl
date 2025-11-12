@@ -13,7 +13,9 @@ using CUDA
 using CUDA.CUSPARSE: CuSparseMatrixCSR
 using LinearAlgebra
 using SparseArrays
+using Random
 
+Random.seed!(1)
 println("="^70)
 println("Arrowhead Solver Example")
 println("="^70)

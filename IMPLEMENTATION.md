@@ -235,6 +235,10 @@ Krylov.jl-based iterative refinement:
 
 **Key Features:**
 - **Krylov.jl Integration**: Uses professional implementation with extensive testing
+- **Right Preconditioning**: Uses `N=M, ldiv=true` for right preconditioning
+  - BiCGSTAB monitors true residual `||b - Ax||`, not preconditioned residual
+  - Internal Krylov residual matches actual solution residual
+  - Better convergence monitoring than left preconditioning for approximate preconditioners
 - **Custom Operators**: ArrowheadOperator and ArrowheadPreconditioner
 - **Preallocated Workspace**: All BiCGStab vectors in solver.workspace
 - **Lazy Krylov Workspace**: Allocated on first solve, reused thereafter

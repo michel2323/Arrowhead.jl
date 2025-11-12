@@ -109,18 +109,25 @@ function bicgstab_solve!(
     end
     workspace = solver.workspace.krylov_workspace
 
-    # Solve with Krylov.jl BiCGStab
+    # Solve with Krylov.jl BiCGStab using RIGHT preconditioning
+    # Right preconditioning: AN⁻¹y = b, then x = N⁻¹y
+    # Benefits:
+    #   - Krylov tracks ||b - AN⁻¹y|| = ||b - Ax|| (true residual, not preconditioned)
+    #   - BiCGSTAB internal residual matches the actual solution residual
+    #   - Convergence criteria directly reflects solution quality
+    # Note: With ldiv=true, Krylov.jl internally calls ldiv!(y, N, x) to apply N⁻¹
+    #       and returns the final solution x directly (not the intermediate y)
     # verbose: 0=quiet, 1=iterations+final, 2=iterations+residuals
-    # Note: atol and rtol are set to the same value for consistency
     Krylov.bicgstab!(
         workspace, A, b;
-        M=M, ldiv=true,
+        N=M, ldiv=true,  # N for right preconditioner with ldiv! application
         atol=atol, rtol=rtol,
         itmax=itmax,
         verbose=solver.verbose ? 2 : 0
     )
 
-    # Extract solution
+    # Extract solution from Krylov workspace
+    # Krylov.jl returns the final solution x (already has N⁻¹ applied)
     x_krylov = Krylov.solution(workspace)
     copy!(x, x_krylov)
 
