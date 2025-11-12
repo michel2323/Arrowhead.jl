@@ -357,6 +357,12 @@ function LinearAlgebra.ldiv!(y::ArrowheadVector{T}, ::UniformScaling, x::Arrowhe
     return y
 end
 
+# Override mul! for identity matrix to avoid scalar indexing (needed for Krylov.jl)
+function LinearAlgebra.mul!(y::ArrowheadVector{T}, ::UniformScaling, x::ArrowheadVector{T}) where T
+    copy!(y, x)  # Identity operation: y = I*x = x
+    return y
+end
+
 function Base.copy(src::ArrowheadVector{T,VT}) where {T,VT}
     z0_copy = copy(src.z0)
     z_scenarios_copy = [copy(z) for z in src.z_scenarios]
